@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.amazon.aws.adf.referenceapp.appium.test</groupId>
+    <artifactId>Referenceapp-Appium-Test</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    <name>ReferenceAppAppiumTests</name>
+    <url>http://maven.apache.org</url>
+
+    <!-- All Configurable Properties goes here.
+If they are defined in the running configuration (when locally) or in the Jenkins Jobs, values that appears here
+will be overwritten.
+After, in order to be available from Java Files, they need to be added into the SystemProperties Section of the
+Plugin section.
+-->
+    <properties>
+
+        <!--
+        Note that the subdomain will be concatenated without including the dot symbol, so if you put here: jobalinestaging.com it won't work. You must put: .jobalinestaging.com.
+        It was defined this way because at the beginning the domains of ci servers used to testing were defined as follows:
+        jobs-ci.jobalinestaging.com, laboready-ci.jobalinestaging.com and so on.
+         -->
+        <applicationversion>notspecified</applicationversion>
+
+        <browserstack.username>daminjos</browserstack.username>
+        <browserstack.password>MCmJ22q3cNZKm6c1ouNh</browserstack.password>
+
+        <!--
+        Note that the subdomain will be concatenated without including the dot symbol, so if you put here: jobalinestaging.com it won't work. You must put: .jobalinestaging.com.
+        We should not be including the dot, this is legacy definition. At the beginning the domains of ci servers used for testing were defined as follows:
+        jobs-ci.jobalinestaging.com, laboready-ci.jobalinestaging.com and so on.
+         -->
+        <tests.autDomain>.jobaline.com</tests.autDomain>
+
+        <tests.app.database.host>mysql.jobalineci.com</tests.app.database.host>
+        <tests.app.database.schema>Jobaline</tests.app.database.schema>
+        <tests.app.database.user>root</tests.app.database.user>
+        <tests.app.database.password>jobaline949</tests.app.database.password>
+
+        <tests.smsProvider.id>1</tests.smsProvider.id>
+
+        <tests.smsProvider.twilio.accountId>AC9cdd60c27d0df406e0ad59a366f697d6</tests.smsProvider.twilio.accountId>
+        <tests.smsProvider.twilio.accountToken>4b92b7c8c24e56d854353c501b17f34b</tests.smsProvider.twilio.accountToken>
+        <tests.smsProvider.twilio.accountPhoneNumbers>+14256544305,+14256545242,+14253183073,+14253610123,+14256544041,+14256545226,+14256545248,+14256543699,+14256542678,+12062587423,+12062587437,+12062587420,+12062587407</tests.smsProvider.twilio.accountPhoneNumbers>
+
+        <tests.smsProvider.numberProvider.id>2</tests.smsProvider.numberProvider.id>
+        <tests.smsProvider.numberProvider.poolId>test_automation_numbers</tests.smsProvider.numberProvider.poolId>
+        <tests.smsProvider.numberProvider.acquireNumberTimeout>300000</tests.smsProvider.numberProvider.acquireNumberTimeout>
+        <tests.smsProvider.numberProvider.numberUsageTimeout>900000</tests.smsProvider.numberProvider.numberUsageTimeout>
+
+        <tests.smsProvider.numberProvider.redis.host>jenkins-redis.jobalineci.com</tests.smsProvider.numberProvider.redis.host>
+
+        <tests.testConfigurationFile>testng.xml</tests.testConfigurationFile>
+
+        <!--
+        By default, set EMPTY-TEST which has 0 test cases. The reason is that if someone forgets to define the tests.testnames property or it has an
+        invalid value, this is, the value does not match to some test tag defined in testng.xml, TestNG will run nothing. If tests.testnames is empty or has
+        an invalid value, TestNG run all tests by default!
+        -->
+        <tests.testnames>EMPTY-TEST</tests.testnames>
+
+        <!--
+         - tests.isTesterMachine: Tests are running in the machine of the tester, not in the CI environment (this is, in Jenkins)
+         - tests.isCIMachine: Tests are running in the CI environment (this is, in Jenkins)
+         - tests.isGrid: Tests will run in a Selenium grid. If false, tests will run using drivers for local browsers, this is, browsers installed in the same machine running the test.
+         - tests.gridId: Specify which grid will be used. It allows us to configure properties of each grid, for example Sauce Labs timeouts. The ids of grids are defined in the class GridsIds.
+
+         Note that tests.isTesterMachine, tests.isCIMachine, tests.isGrid accept true or false as well as 0 or 1.
+
+         Default values are set to execute in Jenkins against Sauce Labs
+         -->
+        <tests.isTesterMachine>0</tests.isTesterMachine> <!-- 0 means false -->
+        <tests.isCIMachine>1</tests.isCIMachine> <!-- 1 means true -->
+        <tests.isGrid>1</tests.isGrid> <!-- 1 means true -->
+        <tests.gridId>3</tests.gridId> <!-- 2 is Sauce Labs. 3 Is Browserstack. 4 is Jobaline Selenium Grid See the class GridsIds. -->
+
+
+        <!--
+        This property must be defined in the Jenkins job as a command line parameter. If not, the value defined here will be used.
+
+        The ids of browsers are defined in the class BrowserConfigurationDefinitions.
+
+        You must put a list of ids, separated by commas.
+
+        There are also ids of groups of browsers: DEFAULTGROUPOF_MAIN_BROWSERS, DEFAULTGROUPOF_IE_BROWSERS, DEFAULTGROUPOF_SAFARI_BROWSERS, DEFAULTGROUPOF_PHONE_BROWSERS, DEFAULTGROUPOF_TABLET_BROWSERS
+
+        If you specify a group of browsers, will be selected the default browsers for each category (main, ie, safari, etc.) from SauceLabs or Browserstack depending where are tests running (defined by tests.gridId).
+
+        The default browsers are defined below in this file.
+
+        For example, if a Jenkins jobs is pointing to Sauce Labs and the value of this property is MAIN_BROWSERS, the browsers selected will be those defined in tests.SAUCE_MAIN_BROWSERS.
+
+        Additional notes:
+        Firefox 3.0 is very very slow (at least in Sauce Labs). Note that it will take too many Sauce Labs minutes and incur in costs.
+        -->
+
+        <tests.browserConfigurations>DEFAULT_DESKTOP_BROWSER</tests.browserConfigurations>
+
+        <!--
+        Don't use the next properties directly, for using main browsers, set tests.browserConfigurations with DEFAULTGROUPOF_MAIN_BROWSERS. Then, our testing framework will
+        choose the browsers defined by tests.SAUCE_DEFAULTGROUPOF_MAIN_BROWSERS or by tests.BS_DEFAULTGROUPOF_MAIN_BROWSERS depending where are tests running.
+        -->
+
+        <tests.SAUCE_DEFAULT_DESKTOP_BROWSER>SAUCE_WIN8_FIREFOX_29</tests.SAUCE_DEFAULT_DESKTOP_BROWSER>
+
+        <tests.BS_DEFAULT_DESKTOP_BROWSER>BS_WIN8_FIREFOX_40</tests.BS_DEFAULT_DESKTOP_BROWSER>
+
+        <tests.TESTERGRID_DEFAULT_DESKTOP_BROWSER>TESTERGRID_MAC_SAFARI</tests.TESTERGRID_DEFAULT_DESKTOP_BROWSER>
+
+        <tests.JSG_DEFAULT_DESKTOP_BROWSER>JSG_WIN_FIREFOX</tests.JSG_DEFAULT_DESKTOP_BROWSER>
+
+        <tests.SAUCE_DEFAULTGROUPOF_MAIN_BROWSERS>SAUCE_WIN8_CHROME_31,SAUCE_WIN8_FIREFOX_29</tests.SAUCE_DEFAULTGROUPOF_MAIN_BROWSERS>
+        <tests.SAUCE_DEFAULTGROUPOF_IE_BROWSERS>SAUCE_WIN8_1_IE_11,SAUCE_WIN8_IE_10,SAUCE_WIN7_IE_9,SAUCE_WIN7_IE_8</tests.SAUCE_DEFAULTGROUPOF_IE_BROWSERS>
+        <tests.SAUCE_DEFAULTGROUPOF_IE_BROWSERS_FOR_EMPLOYER_TESTS>SAUCE_WIN8_1_IE_11,SAUCE_WIN8_IE_10,SAUCE_WIN7_IE_9,SAUCE_WIN7_IE_8</tests.SAUCE_DEFAULTGROUPOF_IE_BROWSERS_FOR_EMPLOYER_TESTS>
+        <tests.SAUCE_DEFAULTGROUPOF_SAFARI_BROWSERS>SAUCE_MACMOUNTAINLION_SAFARI_6</tests.SAUCE_DEFAULTGROUPOF_SAFARI_BROWSERS>
+        <tests.SAUCE_DEFAULTGROUP1OF_PHONE_BROWSERS>SAUCE_IPHONE_IOS8,SAUCE_IPHONE_IOS7</tests.SAUCE_DEFAULTGROUP1OF_PHONE_BROWSERS>
+        <tests.SAUCE_DEFAULTGROUP2OF_PHONE_BROWSERS>SAUCE_ANDROID4_PHONE</tests.SAUCE_DEFAULTGROUP2OF_PHONE_BROWSERS>
+        <tests.SAUCE_DEFAULTGROUP1OF_TABLET_BROWSERS>SAUCE_IPAD_IOS8,SAUCE_IPAD_IOS7</tests.SAUCE_DEFAULTGROUP1OF_TABLET_BROWSERS>
+        <tests.SAUCE_DEFAULTGROUP2OF_TABLET_BROWSERS>SAUCE_ANDROID4_TABLET</tests.SAUCE_DEFAULTGROUP2OF_TABLET_BROWSERS>
+
+        <tests.BS_DEFAULTGROUPOF_MAIN_BROWSERS>BS_WIN8_CHROME_31,BS_WIN8_FIREFOX_40</tests.BS_DEFAULTGROUPOF_MAIN_BROWSERS>
+        <tests.BS_DEFAULTGROUPOF_IE_BROWSERS>BS_WIN8_1_IE_11,BS_WIN8_IE_10,BS_WIN7_IE_9,BS_WIN7_IE_8</tests.BS_DEFAULTGROUPOF_IE_BROWSERS>
+        <tests.BS_DEFAULTGROUPOF_IE_BROWSERS_FOR_EMPLOYER_TESTS>BS_WIN8_1_IE_11,BS_WIN8_IE_10,BS_WIN7_IE_9,BS_WIN7_IE_8</tests.BS_DEFAULTGROUPOF_IE_BROWSERS_FOR_EMPLOYER_TESTS>
+        <tests.BS_DEFAULTGROUPOF_SAFARI_BROWSERS>BS_MAC_EL_CAPITAN_SAFARI_9,BS_MACMOUNTAINLION_SAFARI_6_1</tests.BS_DEFAULTGROUPOF_SAFARI_BROWSERS>
+        <tests.BS_DEFAULTGROUP1OF_PHONE_BROWSERS>BS_IPHONE_IOS7_PORTRAIT,BS_IPHONE_IOS6_PORTRAIT</tests.BS_DEFAULTGROUP1OF_PHONE_BROWSERS>
+        <tests.BS_DEFAULTGROUP2OF_PHONE_BROWSERS>BS_ANDROID4_3_PHONE</tests.BS_DEFAULTGROUP2OF_PHONE_BROWSERS>
+        <tests.BS_DEFAULTGROUP1OF_TABLET_BROWSERS>BS_IPAD_IOS7_PORTRAIT</tests.BS_DEFAULTGROUP1OF_TABLET_BROWSERS>
+        <tests.BS_DEFAULTGROUP2OF_TABLET_BROWSERS>BS_ANDROID4_4_TABLET</tests.BS_DEFAULTGROUP2OF_TABLET_BROWSERS>
+
+        <tests.JSG_DEFAULTGROUPOF_MAIN_BROWSERS>JSG_WIN_CHROME,JSG_WIN_FIREFOX</tests.JSG_DEFAULTGROUPOF_MAIN_BROWSERS>
+        <tests.JSG_DEFAULTGROUPOF_IE_BROWSERS>JSG_WIN7_IE_8,JSG_WIN7_IE_9,JSG_WIN8_IE_10,JSG_WIN8_1_IE_11</tests.JSG_DEFAULTGROUPOF_IE_BROWSERS>
+        <tests.JSG_DEFAULTGROUPOF_IE_BROWSERS_FOR_EMPLOYER_TESTS>JSG_WIN7_IE_8,JSG_WIN7_IE_9,JSG_WIN8_IE_10,JSG_WIN8_1_IE_11</tests.JSG_DEFAULTGROUPOF_IE_BROWSERS_FOR_EMPLOYER_TESTS>
+
+        <tests.AFOUR_DEFAULTGROUP1OF_PHONE_BROWSERS>AFOUR_ANDROID4_PHONE</tests.AFOUR_DEFAULTGROUP1OF_PHONE_BROWSERS>
+        <tests.AFOUR_DEFAULTGROUP2OF_PHONE_BROWSERS>AFOUR_ANDROID4_TAB</tests.AFOUR_DEFAULTGROUP2OF_PHONE_BROWSERS>
+        <tests.AFOUR_DEFAULTGROUP1OF_TABLET_BROWSERS>AFOUR_IOS9_IPHONE6S</tests.AFOUR_DEFAULTGROUP1OF_TABLET_BROWSERS>
+        <tests.AFOUR_DEFAULTGROUP2OF_TABLET_BROWSERS>AFOUR_IOS9_IPAD</tests.AFOUR_DEFAULTGROUP2OF_TABLET_BROWSERS>
+
+        <!-- CI job name -->
+
+        <!--<tests.ciJobName>${JOB_NAME}</tests.ciJobName>-->
+
+        <!-- CI build number -->
+
+        <!--<tests.ciBuildNumber>${BUILD_NUMBER}</tests.ciBuildNumber>-->
+
+        <!--
+         CI job name and build number.
+         Currently we are using Jenkins. Jenkins will set the BUILD_TAG env variable that will have the next value: jenkins-${JOB_NAME}-${BUILD_NUMBER}.
+         See https://wiki.jenkins-ci.org/display/JENKINS/Building+a+software+project#Buildingasoftwareproject-JenkinsSetEnvironmentVariables
+         -->
+
+        <!--<tests.ciJobNameAndBuildNumber>${BUILD_TAG}</tests.ciJobNameAndBuildNumber>-->
+
+        <!--
+         How long Selenium commands can delay. In seconds. 150 = 2 minutes and a half.
+         -->
+        <tests.seleniumCommandTimeout>150</tests.seleniumCommandTimeout>
+
+        <!--
+         How long Selenium must wait for next command. In seconds. 210 = 3 minutes and a half.
+         -->
+        <tests.seleniumIdleTimeout>210</tests.seleniumIdleTimeout>
+
+        <!--
+         How long Selenium must wait for next command. In seconds. 900 = 15 minutes and a half.
+         -->
+        <tests.seleniumMaxDurationTimeout>900</tests.seleniumMaxDurationTimeout>
+
+    </properties>
+
+
+
+    <dependencies>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>6.8.8</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.appium</groupId>
+            <artifactId>java-client</artifactId>
+            <version>3.1.0</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.6</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.10</version>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/dependency-jars/</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.5.4</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <finalName>zip-with-dependencies</finalName>
+                            <appendAssemblyId>false</appendAssemblyId>
+                            <descriptors>
+                                <descriptor>src/main/assembly/zip.xml</descriptor>
+                            </descriptors>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
